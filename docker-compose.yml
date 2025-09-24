@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  gerador:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      BASIC_AUTH_USER: "admin"
+      BASIC_AUTH_PASS: "changeme"
+      MAX_RANGE: "10000"
+    restart: unless-stopped
