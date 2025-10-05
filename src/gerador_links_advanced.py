@@ -17,7 +17,10 @@ def main() -> None:
     )
     parser.add_argument(
         "--url", "-u", required=True,
-        help="Template de URL (use {n} ou {n:03d} ou {} como placeholder)."
+        help=(
+            "Template de URL (use {n} ou {n:03d} ou {} "
+            "como placeholder)."
+        ),
     )
     parser.add_argument("--start", type=int, required=True)
     parser.add_argument("--end", type=int, required=True)
@@ -28,7 +31,7 @@ def main() -> None:
     )
     parser.add_argument(
         "--format", "-f", dest="out_format", default="html",
-        choices=["html", "csv", "json", "ndjson", "txt"]
+        choices=["html", "csv", "json", "ndjson", "txt"],
     )
     parser.add_argument(
         "--output", "-o",
@@ -37,8 +40,12 @@ def main() -> None:
     args = parser.parse_args()
 
     items = gerar_links_iter(
-        args.url, args.start, args.end, pad=args.pad,
-        step=args.step, label_template=args.label_template
+        args.url,
+        args.start,
+        args.end,
+        pad=args.pad,
+        step=args.step,
+        label_template=args.label_template,
     )
     writer = route_writer(args.out_format)
 
