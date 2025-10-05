@@ -2,8 +2,8 @@
 """
 gerador_links_advanced_auth.py
 
- - App helpers for generating links (html/csv/json/ndjson/txt).
- - Designed to be imported by CLI and by Flask app.
+Helpers for generating links (html/csv/json/ndjson/txt).
+This module is imported by CLI and by the Flask app.
 """
 from __future__ import annotations
 
@@ -67,7 +67,9 @@ def safe_format(template: str, n: int, pad: int = 0) -> str:
         try:
             return template.format(n=n)
         except Exception as exc:
-            raise ValueError(f"Erro ao formatar template com spec: {exc}") from exc
+            raise ValueError(
+                f"Erro ao formatar template com spec: {exc}"
+            ) from exc
 
     if pad and pad > 0:
         return template.format(n=f"{n:0{pad}d}")
@@ -98,7 +100,7 @@ def gerar_links_iter(
     if step <= 0:
         raise ValueError("step deve ser >= 1")
 
-    # simple abuse protection; MAX_RANGE comes from env in Flask wrapper
+    # Abuse protection: MAX_RANGE can be set as env var.
     max_range_env = os.environ.get("MAX_RANGE")
     if max_range_env:
         try:
@@ -110,7 +112,8 @@ def gerar_links_iter(
 
     if max_range is not None and (end - start + 1) > max_range:
         raise ValueError(
-            f"Range muito grande: {(end - start + 1)} entradas (máx {max_range})"
+            f"Range muito grande: {(end - start + 1)} entradas "
+            f"(máx {max_range})"
         )
 
     if "{}" in label_template:
@@ -131,15 +134,20 @@ def gerar_links_iter(
 
 
 def write_html_stream(
-    items: Iterable[Dict[str, Any]], file_obj: io.TextIOBase, title: str = "Links"
+    items: Iterable[Dict[str, Any]], file_obj: io.TextIOBase,
+    title: str = "Links"
 ) -> None:
     file_obj.write(
         "<!doctype html>\n<html lang='pt-BR'>\n<head>\n<meta charset='utf-8'>\n"
     )
-    file_obj.write(f"<title>{html_lib.escape(title)}</title>\n</head>\n<body>\n<ul>\n")
+    file_obj.write(
+        f"<title>{html_lib.escape(title)}</title>\n"
+        "</head>\n<body>\n<ul>\n"
+    )
     for it in items:
         file_obj.write(
-            f'  <li><a href="{html_lib.escape(it["url"])}">{it["label"]}</a></li>\n'
+            f'  <li><a href="{html_lib.escape(it["url"])}">'
+            f'{it["label"]}</a></li>\n'
         )
     file_obj.write("</ul>\n</body>\n</html>\n")
 
@@ -151,36 +159,4 @@ def write_csv_stream(items: Iterable[Dict[str, Any]], file_obj: io.TextIOBase) -
         writer.writerow([it["n"], it["url"], it["label"]])
 
 
-def write_ndjson_stream(items: Iterable[Dict[str, Any]], file_obj: io.TextIOBase) -> None:
-    for it in items:
-        file_obj.write(json.dumps(it, ensure_ascii=False) + "\n")
-
-
-def write_json_array_stream(items: Iterable[Dict[str, Any]], file_obj: io.TextIOBase) -> None:
-    first = True
-    file_obj.write("[\n")
-    for it in items:
-        if not first:
-            file_obj.write(",\n")
-        file_obj.write(json.dumps(it, ensure_ascii=False))
-        first = False
-    file_obj.write("\n]\n")
-
-
-def write_txt_stream(items: Iterable[Dict[str, Any]], file_obj: io.TextIOBase) -> None:
-    for it in items:
-        file_obj.write(f"{it['label']} -> {it['url']}\n")
-
-
-def route_writer(format_name: str):
-    mapping = {
-        "html": write_html_stream,
-        "csv": write_csv_stream,
-        "ndjson": write_ndjson_stream,
-        "json": write_json_array_stream,
-        "txt": write_txt_stream,
-    }
-    fmt = format_name.lower()
-    if fmt not in mapping:
-        raise ValueError(f"Formato de saída desconhecido: {format_name}")
-    return mapping[fmt]
+def write_ndjson_stream(items: Iterable[Dict[str, Any)], file]()
